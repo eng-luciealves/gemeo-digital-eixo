@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@400;500;600&display=swap');
+  <style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@400;500;600&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  
+  :root{
+    /* Cores ANSYS sem mudar o layout */
+    --bg:#1e1e1e;--panel:#2d2d2d;--border:#454545;
+    --ok:#00d4aa;--warn:#ffb400;--fail:#ef4444;
+    --accent:#ffb400;--accent2:#ffb400; /* Dourado ANSYS */
+    --text:#f0f0f0;--muted:#aaaaaa;--card:#141414;
+  }
+  
+  body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font-size:14px;padding:16px;min-height:100vh}
+  .mono{font-family:'Share Tech Mono',monospace}
+
+  .header{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+  .header h2{font-size:15px;font-weight:600;letter-spacing:0.8px;color:var(--accent)}
+  .pulse{width:10px;height:10px;border-radius:50%;background:var(--ok);animation:pulse 2s infinite;flex-shrink:0}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(0,212,170,.5)}70%{box-shadow:0 0 0 8px rgba(0,212,170,0)}100%{box-shadow:0 0 0 0 rgba(0,212,170,0)}}
+
+  .equip-card{background:linear-gradient(135deg,#2d2d2d 60%,#1e1e1e);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;gap:12px}
+  .equip-img{width:130px;height:80px;object-fit:cover;border-radius:5px;border:1px solid var(--border);flex-shrink:0;background:#000}
+  .equip-info{font-size:11px;color:var(--muted);line-height:1.6}
+  .equip-info strong{display:block;font-size:13px;color:var(--accent);margin-bottom:2px}
+  .equip-badge{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;background:#141414;border:1px solid var(--accent);color:var(--accent);margin-top:4px}
+
+  .layout{display:grid;grid-template-columns:260px 1fr;gap:12px}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px}
+  .section-title{font-size:10px;font-weight:600;letter-spacing:1.2px;color:var(--accent);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+  .section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+  .field{margin-bottom:7px}
+  .field label{display:block;font-size:10px;color:var(--muted);margin-bottom:3px}
+  .field input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:4px;padding:6px 8px;color:var(--text);font-family:'Share Tech Mono',monospace}
+
+  .btn-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+  .btn{background:var(--card);border:1px solid var(--border);border-radius:4px;color:var(--text);padding:7px;font-size:12px;cursor:pointer;font-weight:500}
+  .btn-primary{border-color:var(--accent);color:var(--accent)}
+
+  .metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+  .metric{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px;position:relative}
+  .metric::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent)}
+  .metric .val{font-family:'Share Tech Mono',monospace;font-size:18px;color:var(--accent)}
+  .metric .lbl{font-size:10px;color:var(--muted)}
+
+  .status-bar{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:6px;margin-top:8px;border:1px solid var(--border);background:var(--card)}
+  .alert-box{padding:8px 12px;border-radius:4px;font-size:11px;margin-top:8px}
+  .alert-ok{background:#1a2e25;border:1px solid #00d4aa33;color:var(--ok)}
+  .alert-fail{background:#2e1a1a;border:1px solid #ef444444;color:var(--fail)}
+
+  .chart-wrap{position:relative;width:100%;height:170px;margin-top:8px}
+  .diag-box{background:var(--card);border-left:2px solid var(--accent);padding:10px 12px;margin-top:8px;font-size:12px;color:var(--muted)}
+  .diag-box span{color:var(--text);font-weight:500}
+
+  .fatigue-footer {
+    border-left: 2px solid var(--accent);
+    padding: 10px 15px;
+    background: rgba(255, 180, 0, 0.05);
+    margin-top: 15px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .footer-grid {display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;}
+
+  table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px}
+  th{background:var(--card);color:var(--muted);padding:5px 8px;text-align:left;border-bottom:1px solid var(--border)}
+  td{padding:4px 8px;border-bottom:1px solid #252525;font-family:'Share Tech Mono',monospace}
+  
+  .tag{display:inline-block;padding:2px 6px;border-radius:3px;font-size:10px;font-weight:600}
+  .tag-ok{background:#1a2e25;color:var(--ok);border:1px solid #00d4aa44}
+  .tag-fail{background:#2e1a1a;color:var(--fail);border:1px solid #ef444444}
+  .tag-warn{background:#2e281a;color:var(--warn);border:1px solid #ffb40044}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="pulse"></div>
+  <h2>Analise de eixo com Gêmeos digitais </h2></strong>
+    <size style="font-size:20px;color:var(--muted);margin-left:8px">v1.0</size>
+  <span style="margin-left:auto;font-size:11px;color:var(--muted)" class="mono" id="clockEl">--:--:--</span>
+</div>
+
+<div class="equip-card">
+  <img class="equip-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Shaft_with_bearings.png/320px-Shaft_with_bearings.png"
+    onerror="this.style.display='none';document.getElementById('equip-fallback').style.display='flex'"
+    alt="Eixo com rolamentos">
+  <div id="equip-fallback" style="display:none;width:130px;height:80px;background:var(--card);border:1px solid var(--border);border-radius:5px;align-items:center;justify-content:center;font-size:11px;color:var(--muted);flex-shrink:0">
+    <img src="c:\Users\Lucie\Downloads\ChatGPT Image 20 de abr. de 2026, 10_30_13.png" 
+    
+    alt="Eixo com rolamentos" style="width: 130px;px;height: 140px;140px;object-fit:contain;filter:grayscale(1%)">
+  </div>
+  <div class="equip-info">
+    <strong><h3>Eixo com Rolamentos</h3></strong>
+    <h2>Composto por eixo de transmissão, rolamentos de suporte, acoplamento e motor elétrico trifásico montados em base metálica.</h2>
+    <span class="equip-badge">Análise em tempo real</span>
+    <details style="margin-top:12px;font: size 22px;px;color:var(--muted)">
+      <summary>Especificações técnicas</summary>
+      <ul style="margin-top:4px;list-style-type:circle;margin-left:16px">
+        <li>Eixo de aço SAE 1045, diâmetro nominal 35 mm, comprimento 1 m.</li>
+        <li>Rolamentos de esferas 6207, capacidade de carga dinâmica 35 kN.</li>
+        <li>Motor elétrico trifásico, potência 2 kW, velocidade nominal 1800 RPM.</li>
+        <li>Acoplamento flexível para compensar desalinhamentos.</li>
+        <Li> Engenheira Lucie Alves</Li>
+      </ul>
+  </div>
+</div>
+
+
+<div class="layout">
+  <div>
+    <div class="panel">
+      <div class="section-title">Parâmetros</div>
+      <div class="field"><label>Torque (N·m)</label><input id="iT" value="500"></div>
+      <div class="field"><label>Comprimento (m)</label><input id="iL" value="1"></div>
+      <div class="field"><label>Diâmetro (mm)</label><input id="iD" value="35"></div>
+      <div class="field"><label>Lim. escoamento (MPa)</label><input id="iSigma" value="250"></div>
+      <div class="field"><label>Módulo G (GPa)</label><input id="iG" value="80"></div>
+      <div class="field"><label>Densidade (kg/m³)</label><input id="iRho" value="7850"></div>
+      <div class="field"><label>RPM</label><input id="iRPM" value="1800"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="iniciar()">▶ Iniciar</button>
+        <button class="btn" onclick="parar()">⏹ Parar</button>
+        <button class="btn" onclick="calcular()">⟳ Calcular</button>
+        <button class="btn btn-danger" onclick="resetar()">✕ Reset</button>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:12px">
+      <div class="section-title">Status</div>
+      <div class="status-bar" id="statusBar">
+        <div class="status-dot" id="statusDot" style="background:var(--ok)"></div>
+        <span class="status-text" id="statusText">Aguardando...</span>
+      </div>
+      <div class="alert-box alert-ok" id="alertBox">Sistema em standby</div>
+    </div>
+
+    <div class="panel" style="margin-top:12px">
+      <div class="section-title">Resultados</div>
+      <div class="metrics">
+        <div class="metric"><div class="val mono" id="rTau">--</div><div class="lbl">Tensão (MPa)</div></div>
+        <div class="metric"><div class="val mono" id="rFOS">--</div><div class="lbl">Fator de Segurança</div></div>
+        <div class="metric"><div class="val mono" id="rFN">--</div><div class="lbl">Freq. Natural (Hz)</div></div>
+        <div class="metric"><div class="val mono" id="rFOP">--</div><div class="lbl">Freq. Operação (Hz)</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="panel">
+      <div class="section-title">Vibração — domínio do tempo</div>
+      <div class="chart-wrap"><canvas id="cTempo"></canvas></div>
+    </div>
+
+    <div class="panel" style="margin-top:12px">
+      <div class="section-title">Espectro FFT</div>
+      <div class="chart-wrap"><canvas id="cFFT"></canvas></div>
+    </div>
+
+    <div class="panel" style="margin-top:12px">
+      <div class="section-title">Diagnóstico & Ação</div>
+      <div class="diag-box" id="diagBox"><span>Inicie o monitoramento para diagnóstico automático.</span></div>
+    </div>
+
+    <div class="footer-grid">
+      <!-- Painel de Fadiga -->
+      <div class="panel">
+        <div class="section-title">Análise de Fadiga (Curva S-N)</div>
+        <div class="chart-wrap">
+            <canvas id="cFadiga"></canvas>
+        </div>
+        <div class="fatigue-footer">
+            Estimativa baseada no limite de resistência de 570 MPa (SAE 1045).
+        </div>
+      </div>
+
+      <!-- Painel de Histórico -->
+      <div class="panel">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <div class="section-title" style="margin-bottom:0;flex:1">Histórico</div>
+            <div style="display:flex;gap:4px">
+                <button class="btn" style="padding:4px 8px;font-size:11px" onclick="exportarCSV()">⬇ CSV</button>
+                <button class="btn btn-danger" style="padding:4px 8px;font-size:11px" onclick="limpar()">✕ Limpar</button>
+            </div>
+        </div>
+        <div style="max-height: 180px; overflow-y: auto;">
+            <table>
+                <thead><tr><th>Hora</th><th>RPM</th><th>Status</th><th>Diagnóstico</th></tr></thead>
+                <tbody id="tHistorico"></tbody>
+            </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+let chartTempo=null,chartFFT=null,chartFadiga=null,loopID=null;
+let tSim=0,buffer=[],historico=[];
+const N=64;
+let freq_op=0,fn_calc=0,statusEstrutural="Seguro",isRunning=false;
+
+function clock(){document.getElementById('clockEl').textContent=new Date().toLocaleTimeString('pt-BR');}
+setInterval(clock,1000);clock();
+
+["iT","iL","iD","iSigma","iG","iRho","iRPM"].forEach(id=>{
+  let db;
+  document.getElementById(id).addEventListener("input",()=>{clearTimeout(db);db=setTimeout(calcular,250);});
+});
+
+function getVals(){
+  return{
+    T:parseFloat(document.getElementById('iT').value)||0,
+    L:parseFloat(document.getElementById('iL').value)||1,
+    d:(parseFloat(document.getElementById('iD').value)||35)/1000,
+    sigma:(parseFloat(document.getElementById('iSigma').value)||250)*1e6,
+    G:(parseFloat(document.getElementById('iG').value)||80)*1e9,
+    rho:parseFloat(document.getElementById('iRho').value)||7850,
+    rpm:parseFloat(document.getElementById('iRPM').value)||0
+  };
+}
+
+function calcular() {
+    const v = getVals();
+    const J = (Math.PI * Math.pow(v.d, 4)) / 32;
+    const I = J / 2;
+    const tau = (v.T * (v.d / 2)) / J; 
+    const area = Math.PI * Math.pow(v.d / 2, 2);
+    const pesoTotal = v.rho * area * v.L * 9.81;
+    const momentoMax = (pesoTotal * v.L) / 8;
+    const sigmaFlexao = (momentoMax * (v.d / 2)) / I;
+    const sigmaVM = Math.sqrt(Math.pow(sigmaFlexao, 2) + 3 * Math.pow(tau, 2));
+    const sigmaMPa = sigmaVM / 1e6;
+    const fos = (v.sigma) / sigmaVM;
+
+    const m = v.rho * area * v.L;
+    const k = (48 * v.G * 2.6 * I) / Math.pow(v.L, 3);
+    fn_calc = (1 / (2 * Math.PI)) * Math.sqrt(k / m);
+    freq_op = v.rpm / 60;
+
+    document.getElementById('rTau').textContent = sigmaMPa.toFixed(2);
+    document.getElementById('rFOS').textContent = fos.toFixed(2);
+    document.getElementById('rFN').textContent = fn_calc.toFixed(2);
+    document.getElementById('rFOP').textContent = freq_op.toFixed(2);
+
+    // Atualiza Gráfico de Fadiga
+    if(chartFadiga) {
+        chartFadiga.data.datasets[1].data = Array(6).fill(sigmaMPa);
+        chartFadiga.update('none');
+    }
+
+    statusEstrutural = fos < 1.2 ? "Falha crítica" : (Math.abs(freq_op - fn_calc) < 5 ? "Ressonância" : "Seguro");
+    atualizarStatusUI(statusEstrutural, null);
+}
+
+function atualizarStatusUI(estrutural, vibDiag) {
+    const dot = document.getElementById('statusDot');
+    const txt = document.getElementById('statusText');
+    const alrt = document.getElementById('alertBox');
+    const diag = document.getElementById('diagBox');
+    let sf = estrutural;
+
+    if (vibDiag && vibDiag !== "Normal" && estrutural === "Seguro") sf = "Alerta vibracional";
+
+    // Lógica Dinâmica de Diagnóstico e Instrução Técnica
+    if (sf === "Seguro") {
+        dot.style.background = 'var(--ok)';
+        txt.textContent = 'Operação normal';
+        txt.style.color = 'var(--ok)';
+        alrt.className = 'alert-box alert-ok';
+        alrt.textContent = 'Sistema estável. Realizar apenas inspeção visual de rotina.';
+        
+        diag.innerHTML = `
+            <span>DIAGNÓSTICO:</span> Condição nominal.<br>
+            <span>AÇÃO TÉCNICA:</span> 
+            <ul>
+                <li>Manter plano de lubrificação semestral.</li>
+                <li>Registrar logs de temperatura dos mancais.</li>
+            </ul>`;
+
+    } else if (sf === "Ressonância" || sf === "Alerta vibracional") {
+        dot.style.background = 'var(--warn)';
+        txt.textContent = 'Alerta de Manutenção';
+        txt.style.color = 'var(--warn)';
+        alrt.className = 'alert-box alert-warn';
+        alrt.textContent = 'Anomalia detectada. Requer intervenção preventiva.';
+
+        let causa = sf === "Ressonância" ? "Coincidência de Frequência Natural" : "Desbalanceamento Dinâmico";
+        let acao = sf === "Ressonância" ? 
+            "Alterar a rotação (±15%) ou reforçar a rigidez da base metálica." : 
+            "Verificar fixação do acoplamento e realizar balanceamento em campo.";
+
+        diag.innerHTML = `
+            <span>DIAGNÓSTICO:</span> ${causa}.<br>
+            <span>AÇÃO TÉCNICA:</span>
+            <ul>
+                <li>${acao}</li>
+                <li>Verificar folgas nos rolamentos 6207.</li>
+                <li>Monitorar tendência de amplitude nas próximas 2h.</li>
+            </ul>`;
+
+    } else if (sf === "Falha crítica") {
+        dot.style.background = 'var(--fail)';
+        txt.textContent = 'PARADA DE EMERGÊNCIA';
+        txt.style.color = 'var(--fail)';
+        alrt.className = 'alert-box alert-fail';
+        alrt.textContent = 'Tensão Von Mises excedeu o limite seguro!';
+
+        diag.innerHTML = `
+            <span style="color:var(--fail)">DIAGNÓSTICO:</span> Sobrecarga / Escoamento Iminente.<br>
+            <span style="color:var(--fail)">AÇÃO TÉCNICA IMEDIATA:</span>
+            <ul style="border: 1px solid var(--fail); padding: 8px; border-radius: 4px; margin-top: 5px;">
+                <li>Desenergizar motor imediatamente (LOTO).</li>
+                <li>Inspecionar empenamento do eixo SAE 1045.</li>
+                <li>Substituir componentes antes do re-startup.</li>
+            </ul>`;
+    }
+
+    if (vibDiag) {
+        salvarHistorico(sf, vibDiag);
+    }
+}
+function salvarHistorico(status, diag){
+  const v = getVals();
+  historico.push({hora:new Date().toLocaleTimeString('pt-BR'),rpm:v.rpm,status,diag});
+  renderHistorico();
+}
+function renderHistorico(){
+  const tb = document.getElementById('tHistorico');
+  tb.innerHTML = "";
+  historico.slice(-15).reverse().forEach(e => {
+    const cls = e.status === "Seguro" ? "tag-ok" : e.status === 
+    "Falha crítica" ? "tag-fail" : "tag-warn"; 
+    // O  e.diag agora contém a mensagem detalhada (Ex: "Sobrecarga Estrutural")
+    tb.innerHTML += `
+      <tr>
+        <td>${e.hora}</td>
+        <td>${e.rpm}</td>
+        <td><span class="tag ${cls}">${e.status}</span></td>
+        <td style="color: var(--muted)">${e.diag}</td>
+      </tr>`;
+  });
+}
+
+function exportarCSV(){
+  let csv="Hora,RPM,Status,Diagnostico\n";
+  historico.forEach(e=>{csv+=`${e.hora},${e.rpm},${e.status},${e.diag}\n`;});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
+  a.download="analise_eixo.csv";a.click();
+}
+
+function iniciar(){
+  if(isRunning)return;
+  isRunning=true;
+  const grid={color:'rgba(30,58,95,0.3)'};
+  const tick={color:'#64748b',font:{family:"'Share Tech Mono'",size:10}};
+
+  chartTempo=new Chart(document.getElementById('cTempo'),{
+    type:'line',
+    data:{labels:[],datasets:[{label:"Vibração",data:[],borderColor:'#06b6d4',borderWidth:1,pointRadius:0,fill:true,backgroundColor:'rgba(6,182,212,0.1)'}]},
+    options:{animation:false,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid,ticks:{display:false}},y:{grid,ticks:tick}}}
+  });
+
+  chartFFT=new Chart(document.getElementById('cFFT'),{
+    type:'bar',
+    data:{labels:[],datasets:[{data:[],backgroundColor:'rgba(0,212,170,0.5)'}]},
+    options:{animation:false,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid,ticks:tick},y:{grid,ticks:tick}}}
+  });
+
+  chartFadiga=new Chart(document.getElementById('cFadiga'),{
+    type:'line',
+    data:{
+        labels:['10³','10⁴','10⁵','10⁶','10⁷','Endur.'],
+        datasets:[
+            {label:'S-N Curve',data:[570,450,350,280,220,200],borderColor:'#3b82f6',borderDash:[5,5],pointRadius:2},
+            {label:'Atual',data:Array(6).fill(0),borderColor:'#00d4aa',backgroundColor:'rgba(0,212,170,0.1)',fill:true,pointRadius:0}
+        ]
+    },
+    options:{maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{max:600,grid,ticks:tick},x:{grid,ticks:tick}}}
+  });
+
+  tSim=0;buffer=[];
+  loopID=setInterval(loop,80);
+}
+
+function loop(){
+  const vib=Math.sin(2*Math.PI*freq_op*tSim)+0.5*Math.sin(2*Math.PI*2*freq_op*tSim)+(Math.random()-0.5)*0.4;
+  tSim+=0.05;
+  chartTempo.data.labels.push(tSim.toFixed(2));
+  chartTempo.data.datasets[0].data.push(vib);
+  if(chartTempo.data.labels.length>80){chartTempo.data.labels.shift();chartTempo.data.datasets[0].data.shift();}
+  chartTempo.update('none');
+  
+  buffer.push(vib);if(buffer.length>N)buffer.shift();
+  if(buffer.length===N){
+    const esp=fftMag(buffer);
+    chartFFT.data.labels=esp.map((_,i)=>i);
+    chartFFT.data.datasets[0].data=esp;
+    chartFFT.update('none');
+    diagnosticar(esp);
+  }
+}
+
+function fftMag(x){
+  const n=x.length,out=[];
+  for(let k=0;k<n/2;k++){let re=0,im=0;for(let j=0;j<n;j++){const a=2*Math.PI*k*j/n;re+=x[j]*Math.cos(a);im-=x[j]*Math.sin(a);}out.push(Math.sqrt(re*re+im*im)/n);}
+  return out;
+}
+
+function diagnosticar(esp){
+  const pico=Math.max(...esp);
+  atualizarStatusUI(statusEstrutural,pico>1.5?"Desbalanceamento":"Normal");
+}
+
+function parar(){clearInterval(loopID);loopID=null;isRunning=false;}
+function resetar(){location.reload();}
+
+calcular();
+</script>
+</body>
+</html>
